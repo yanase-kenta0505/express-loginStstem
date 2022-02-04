@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>hello</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <h1>新規会員登録</h1>
+    <p style="color: red"><%= err %></p>
+    <form method="post" action="/regist">
+      <input
+        id="name"
+        placeholder="name"
+        type="text"
+        name="name"
+        value="<%= name %>"
+        autocomplete="off"
+      />
+      <input
+        id="email"
+        placeholder="email"
+        type="email"
+        name="email"
+        value="<%= email %>"
+        autocomplete="off"
+      />
+      <input
+        id="password"
+        placeholder="password"
+        type="password"
+        name="password"
+        value="<%= password %>"
+        autocomplete="off"
+
+      />
+      <input id="submit" type="submit" value="regist" />
+    </form>
+  </body>
+  <script></script>
+</html>
