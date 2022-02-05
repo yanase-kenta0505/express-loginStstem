@@ -4,11 +4,15 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var session = require("express-session");
+var bodyParser = require("body-parser");
+var csrf = require("csurf");
 var app = express();
 var db = require("../express-login/models").users;
 
 // var indexRouter = require('./routes/index');
 // var usersRouter = require('./routes/users');
+
+var csrfProtection = csrf({ cookie: false });
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -31,10 +35,10 @@ app.use(
   })
 );
 
-app.get("/", function (req, res) {
+app.get("/", csrfProtection, function (req, res) {
   res.render("index");
 });
-app.get("/myPage/:userId", function (req, res) {
+app.get("/myPage/:userId", csrfProtection, function (req, res) {
   console.log(req.session.userName);
   if (!req.session.userName) {
     res.redirect("/login");
@@ -43,20 +47,24 @@ app.get("/myPage/:userId", function (req, res) {
   }
 });
 
-app.get("/signUp", (req, res) => {
+app.get("/signUp", csrfProtection, (req, res) => {
   res.render("signUp", {
     err: "",
     name: "",
     email: "",
     password: "",
+    csrfToken: req.csrfToken(),
   });
 });
 
-app.get("/login", (req, res) => {
-  res.render("login", { err: "" });
+app.get("/login", csrfProtection, (req, res) => {
+  res.render("login", {
+    err: "",
+    csrfToken: req.csrfToken(),
+  });
 });
 
-app.get("/myPage", (req, res) => {
+app.get("/myPage", csrfProtection, (req, res) => {
   if (!req.session.userName) {
     res.redirect("login");
   } else {
@@ -65,12 +73,12 @@ app.get("/myPage", (req, res) => {
   }
 });
 
-app.get("/logOut", (req, res) => {
+app.get("/logOut", csrfProtection, (req, res) => {
   req.session.userName = undefined;
   res.redirect("/");
 });
 
-app.post("/regist", (req, res) => {
+app.post("/regist", csrfProtection, (req, res) => {
   if (
     req.body.name === "" ||
     req.body.email === "" ||
@@ -81,6 +89,7 @@ app.post("/regist", (req, res) => {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
+      csrfToken: req.csrfToken(),
     });
   } else {
     db.findOrCreate({
@@ -103,7 +112,7 @@ app.post("/regist", (req, res) => {
   }
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", csrfProtection, (req, res) => {
   if (
     req.body.name === "" ||
     req.body.email === "" ||

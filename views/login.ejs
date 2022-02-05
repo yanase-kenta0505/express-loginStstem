@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>hello</title> 
+    <title>hello</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
     <h1>ログイン</h1>
     <p style="color: red"><%= err %></p>
     <form method="post" action="/login">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <input id="email" placeholder="email" type="email" name="email" />
       <input id="password" placeholder="password" type="text" name="password" />
       <input id="submit" type="submit" value="login" />

@@ -8,6 +8,7 @@
     <h1>新規会員登録</h1>
     <p style="color: red"><%= err %></p>
     <form method="post" action="/regist">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
       <input
         id="name"
         placeholder="name"
@@ -31,7 +32,6 @@
         name="password"
         value="<%= password %>"
         autocomplete="off"
-
       />
       <input id="submit" type="submit" value="regist" />
     </form>
