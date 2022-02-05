@@ -30,28 +30,17 @@ app.use(
     },
   })
 );
-// app.use('/', indexRouter);
-// app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
 
 app.get("/", function (req, res) {
-  // if (!req.session.userName) {
-  //   res.redirect("login");
-  // } else {
-  //   console.log(req.session.userName);
-  //   res.render("index", { name: req.session.userName });
-  // }
- res.render('index')
+  res.render("index");
 });
-app.get("/myPage", function (req, res) {
+app.get("/myPage/:userId", function (req, res) {
+  console.log(req.session.userName);
   if (!req.session.userName) {
-    res.redirect("login");
+    res.redirect("/login");
   } else {
-    // console.log(req.session.userName);
     res.render("myPage", { name: req.session.userName });
   }
- 
 });
 
 app.get("/signUp", (req, res) => {
@@ -67,9 +56,17 @@ app.get("/login", (req, res) => {
   res.render("login", { err: "" });
 });
 
+app.get("/myPage", (req, res) => {
+  if (!req.session.userName) {
+    res.redirect("login");
+  } else {
+    console.log(req.session.userName);
+    res.redirect(`/myPage/${req.session.userName}`);
+  }
+});
+
 app.get("/logOut", (req, res) => {
   req.session.userName = undefined;
-  console.log(req.session.userName);
   res.redirect("/");
 });
 
@@ -79,7 +76,6 @@ app.post("/regist", (req, res) => {
     req.body.email === "" ||
     req.body.password === ""
   ) {
-    // res.redirect('/signUp')
     res.render("signUp", {
       err: "全ての項目を埋めてください",
       name: req.body.name,
@@ -123,12 +119,9 @@ app.post("/login", (req, res) => {
     })
       .then((users) => {
         req.session.userName = users[0].name;
-        // res.render("index", { name: users[0].name });
-        res.redirect("/");
-        // res.redirect("/myPage");
+        res.redirect(`/myPage/${users[0].name}`);
       })
       .catch(() => {
-        // console.log("err");
         res.render("login", {
           err: "メールアドレスかパスワードが間違っています",
         });
