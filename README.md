@@ -7,5 +7,7 @@
 
 ②ejsファイル内に<script src="../routes/****.js"></script>のような形でroutesディレクトリー内のファイルと
 　連携できないかと試行錯誤したのですができませんでした。
- 
+
+③expressとvue.jsなどを連携させる方法。
+
 
