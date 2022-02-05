@@ -36,12 +36,22 @@ app.use(
 // catch 404 and forward to error handler
 
 app.get("/", function (req, res) {
+  // if (!req.session.userName) {
+  //   res.redirect("login");
+  // } else {
+  //   console.log(req.session.userName);
+  //   res.render("index", { name: req.session.userName });
+  // }
+ res.render('index')
+});
+app.get("/myPage", function (req, res) {
   if (!req.session.userName) {
     res.redirect("login");
   } else {
-    console.log(req.session.userName);
-    res.render("index", { name: req.session.userName });
+    // console.log(req.session.userName);
+    res.render("myPage", { name: req.session.userName });
   }
+ 
 });
 
 app.get("/signUp", (req, res) => {
@@ -115,6 +125,7 @@ app.post("/login", (req, res) => {
         req.session.userName = users[0].name;
         // res.render("index", { name: users[0].name });
         res.redirect("/");
+        // res.redirect("/myPage");
       })
       .catch(() => {
         // console.log("err");
