@@ -53,6 +53,7 @@ app.get("/signUp", csrfProtection, (req, res) => {
     name: "",
     email: "",
     password: "",
+    birthplace: "",
     csrfToken: req.csrfToken(),
   });
 });
@@ -78,6 +79,13 @@ app.get("/logOut", csrfProtection, (req, res) => {
   res.redirect("/");
 });
 
+app.get("/editPassword", csrfProtection, (req, res) => {
+  res.render("editPassword", {
+    err: "",
+    csrfToken: req.csrfToken(),
+  });
+});
+
 app.post("/regist", csrfProtection, (req, res) => {
   if (
     req.body.name === "" ||
@@ -89,6 +97,7 @@ app.post("/regist", csrfProtection, (req, res) => {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
+      birthplace: req.body.birthplace,
       csrfToken: req.csrfToken(),
     });
   } else {
@@ -99,6 +108,7 @@ app.post("/regist", csrfProtection, (req, res) => {
         name: req.body.name,
         email: req.body.email,
         password: req.body.password,
+        birthplace: req.body.birthplace,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -118,7 +128,10 @@ app.post("/login", csrfProtection, (req, res) => {
     req.body.email === "" ||
     req.body.password === ""
   ) {
-    res.render("login", { err: "全ての項目を埋めてください" });
+    res.render("login", {
+      err: "全ての項目を埋めてください",
+      csrfToken: req.csrfToken(),
+    });
   } else {
     db.findAll({
       where: {
@@ -133,6 +146,40 @@ app.post("/login", csrfProtection, (req, res) => {
       .catch(() => {
         res.render("login", {
           err: "メールアドレスかパスワードが間違っています",
+          csrfToken: req.csrfToken(),
+        });
+      });
+  }
+});
+
+app.post("/change", csrfProtection, (req, res) => {
+  if (
+    req.body.email === "" ||
+    req.body.birthplace === "" ||
+    req.body.newPassword === ""
+  ) {
+    res.render("editPassword", {
+      err: "全ての項目を埋めてください",
+      csrfToken: req.csrfToken(),
+    });
+  } else {
+    db.findAll({
+      where: {
+        email: req.body.email,
+        birthplace: req.body.birthplace,
+      },
+    })
+      .then((users) => {
+        console.log(users);
+        users[0].password = req.body.newPassword;
+        users[0].save();
+        res.redirect("/login");
+      })
+      .catch((err) => {
+        console.log(err);
+        res.render("editPassword", {
+          err: "マッチするユーザーは存在しません",
+          csrfToken: req.csrfToken(),
         });
       });
   }

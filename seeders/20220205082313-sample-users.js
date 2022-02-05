@@ -7,6 +7,7 @@ module.exports = {
         name: "admin",
         email: "admin@gmail.com",
         password: "admin",
+        birthplace: "tokyo",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
