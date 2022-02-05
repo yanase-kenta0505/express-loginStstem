@@ -35,6 +35,15 @@ app.use(
 
 // catch 404 and forward to error handler
 
+app.get("/", function (req, res) {
+  if (!req.session.userName) {
+    res.redirect("login");
+  } else {
+    console.log(req.session.userName);
+    res.render("index", { name: req.session.userName });
+  }
+});
+
 app.get("/signUp", (req, res) => {
   res.render("signUp", {
     err: "",
@@ -46,6 +55,12 @@ app.get("/signUp", (req, res) => {
 
 app.get("/login", (req, res) => {
   res.render("login", { err: "" });
+});
+
+app.get("/logOut", (req, res) => {
+  req.session.userName = undefined;
+  console.log(req.session.userName);
+  res.redirect("/");
 });
 
 app.post("/regist", (req, res) => {
